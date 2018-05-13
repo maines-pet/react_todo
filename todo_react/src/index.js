@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 class ToDoElement {
-	constructor(description, isCompleted){
+	constructor(sequenceId, description, isCompleted){
+		this.sequenceId = sequenceId;
 		this.description = description;
 		this.isCompleted = isCompleted;
 	}
@@ -16,18 +17,31 @@ class ToDo extends React.Component{
 			toDoList : []
 		}
 		this.handleButtonClick = this.handleButtonClick.bind(this);
+		this.handleCheckBox = this.handleCheckBox.bind(this);
 	}
 
 	handleButtonClick(todo){
-		this.setState({toDoList : this.state.toDoList.concat([new ToDoElement(todo.inputText, todo.completed)])});
+		this.setState({toDoList : this.state.toDoList.concat([new ToDoElement(this.state.toDoList.length, todo.inputText, todo.inputCompleted)])});
+	}
+
+	handleCheckBox(i){
+		let todo = this.state.toDoList.map((elem, index) => {
+			if (elem.sequenceId === i) {
+				elem.isCompleted = !elem.isCompleted;
+			}
+			return elem;
+		});
+		this.setState(function(prev, props){
+				return {toDoList : todo}
+		});
 	}
 
 	render(){
 		return(
 		<div className="main">
 			<div className="header">todo</div>
-			<CreateToDoForm onButtonClick = {this.handleButtonClick}/>
-			<ToDoList toDoList = {this.state.toDoList}/>
+			<CreateToDoForm onButtonClick = {this.handleButtonClick} />
+			<ToDoList toDoList = {this.state.toDoList} onCheckBoxChange={this.handleCheckBox}/>
 		</div>
 	);
 	}
@@ -63,11 +77,19 @@ class CreateToDoForm extends React.Component{
 }
 
 class ToDoList extends React.Component{
+	constructor(props){
+		super(props);
+		this.handleCheckBoxChanges = this.handleCheckBoxChanges.bind(this);
+	}
+
+	handleCheckBoxChanges(index){
+		this.props.onCheckBoxChange(index);
+	}
 
 
   render(){
     const taskList = this.props.toDoList.map((elem, index) =>{
-      return <ToDoDetails key = {index} taskDetail = {elem}/>
+      return <ToDoDetails  taskDetail={elem} key={elem.sequenceId} index={elem.sequenceId} onCheckBoxClick={this.handleCheckBoxChanges}/>
     });
     
     return(
@@ -87,22 +109,21 @@ class ToDoDetails extends React.Component{
 	}
 
 	handleCheckBox(event){
-		this.props.onCheck
+		this.props.onCheckBoxClick(this.props.index);
 	}
 
 	render(){
-		console.log(this.props.taskDetail);
 		const task = this.props.taskDetail;
 		return(
 		<React.Fragment>
 			<li>
-					<i className={'checkbox-complete ' + (task.isCompleted ? 'far fa-check-square' : 'far fa-square')}
-						onClick=
-					/>
-					<span className='taks-detail'>{task.description}</span>
-					<span className='delete'>x</span>
-				</li>
-			</React.Fragment>
+				<i className={'checkbox-complete ' + (task.isCompleted ? 'far fa-check-square' : 'far fa-square')}
+					onClick={this.handleCheckBox}
+				/>
+				<span className='taks-detail'>{task.description}</span>
+				<span className='delete'>x</span>
+			</li>
+		</React.Fragment>
 		);
 	}
 }
