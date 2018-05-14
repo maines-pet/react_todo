@@ -18,6 +18,7 @@ class ToDo extends React.Component{
 		}
 		this.handleButtonClick = this.handleButtonClick.bind(this);
 		this.handleCheckBox = this.handleCheckBox.bind(this);
+		this.handleDeleteClick = this.handleDeleteClick.bind(this);
 	}
 
 	handleButtonClick(todo){
@@ -36,12 +37,25 @@ class ToDo extends React.Component{
 		});
 	}
 
+	handleDeleteClick(i){
+		let todo = this.state.toDoList.filter((elem, index) => {
+			return elem.sequenceId !== i;
+		});
+		this.setState({toDoList : todo});
+	}
+
 	render(){
+		const taskList = this.state.toDoList.map((elem, index) =>{
+			return <ToDoList taskDetail={elem} key={elem.sequenceId} index={elem.sequenceId}
+			onCheckBoxClick={this.handleCheckBox} onDeleteClick={this.handleDeleteClick}/>
+		});
+
 		return(
 		<div className="main">
 			<div className="header">todo</div>
 			<CreateToDoForm onButtonClick = {this.handleButtonClick} />
-			<ToDoList toDoList = {this.state.toDoList} onCheckBoxChange={this.handleCheckBox}/>
+			{taskList}
+
 		</div>
 	);
 	}
@@ -79,37 +93,16 @@ class CreateToDoForm extends React.Component{
 class ToDoList extends React.Component{
 	constructor(props){
 		super(props);
-		this.handleCheckBoxChanges = this.handleCheckBoxChanges.bind(this);
-	}
-
-	handleCheckBoxChanges(index){
-		this.props.onCheckBoxChange(index);
-	}
-
-
-  render(){
-    const taskList = this.props.toDoList.map((elem, index) =>{
-      return <ToDoDetails  taskDetail={elem} key={elem.sequenceId} index={elem.sequenceId} onCheckBoxClick={this.handleCheckBoxChanges}/>
-    });
-    
-    return(
-      <div>
-        <ul>
-          {taskList}
-        </ul>
-      </div>
-    );
-  }
-}
-
-class ToDoDetails extends React.Component{
-	constructor(props){
-		super(props);
 		this.handleCheckBox = this.handleCheckBox.bind(this);
+		this.handleDeleteClick = this.handleDeleteClick.bind(this);
 	}
 
 	handleCheckBox(event){
 		this.props.onCheckBoxClick(this.props.index);
+	}
+
+	handleDeleteClick(event){
+		this.props.onDeleteClick(this.props.index);
 	}
 
 	render(){
@@ -121,7 +114,7 @@ class ToDoDetails extends React.Component{
 					onClick={this.handleCheckBox}
 				/>
 				<span className='taks-detail'>{task.description}</span>
-				<span className='delete'>x</span>
+				<span className='delete' onClick={this.handleDeleteClick}>x</span>
 			</li>
 		</React.Fragment>
 		);
