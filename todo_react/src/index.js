@@ -94,15 +94,15 @@ class ToDoDetails extends React.Component{
 		console.log(this.props.taskDetail);
 		const task = this.props.taskDetail;
 		return(
-		<React.Fragment>
+		<ul>
 			<li>
-					<i className={'checkbox-complete ' + (task.isCompleted ? 'far fa-check-square' : 'far fa-square')}
-						onClick=
-					/>
-					<span className='taks-detail'>{task.description}</span>
-					<span className='delete'>x</span>
-				</li>
-			</React.Fragment>
+				<i className={'checkbox-complete ' + (task.isCompleted ? 'far fa-check-square' : 'far fa-square')}
+					onClick={this.handleCheckBox}
+				/>
+				<span className='taks-detail'>{task.description}</span>
+				<span className='delete' onClick={this.handleDeleteClick}>x</span>
+			</li>
+		</ul>
 		);
 	}
 }
