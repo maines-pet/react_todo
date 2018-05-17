@@ -110,7 +110,7 @@ class ToDoList extends React.Component{
 	render(){
 		const task = this.props.taskDetail;
 		return(
-		<React.Fragment>
+		<ul>
 			<li>
 				<i className={'checkbox-complete ' + (task.isCompleted ? 'far fa-check-square' : 'far fa-square')}
 					onClick={this.handleCheckBox}
@@ -118,7 +118,7 @@ class ToDoList extends React.Component{
 				<span className='taks-detail'>{task.description}</span>
 				<span className='delete' onClick={this.handleDeleteClick}>x</span>
 			</li>
-		</React.Fragment>
+		</ul>
 		);
 	}
 }
