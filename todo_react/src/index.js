@@ -54,7 +54,9 @@ class ToDo extends React.Component{
 		<div className="main">
 			<div className="header">todo</div>
 			<CreateToDoForm onButtonClick = {this.handleButtonClick} />
-			{taskList}
+			<ul>
+				{taskList}
+			</ul>
 
 		</div>
 	);
