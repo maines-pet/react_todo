@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 class ToDoElement {
-	constructor(description, isCompleted){
+	constructor(sequenceId, description, isCompleted){
+		this.sequenceId = sequenceId;
 		this.description = description;
 		this.isCompleted = isCompleted;
 	}
@@ -16,18 +17,47 @@ class ToDo extends React.Component{
 			toDoList : []
 		}
 		this.handleButtonClick = this.handleButtonClick.bind(this);
+		this.handleCheckBox = this.handleCheckBox.bind(this);
+		this.handleDeleteClick = this.handleDeleteClick.bind(this);
 	}
 
 	handleButtonClick(todo){
-		this.setState({toDoList : this.state.toDoList.concat([new ToDoElement(todo.inputText, todo.completed)])});
+		this.setState({toDoList : this.state.toDoList.concat([new ToDoElement(this.state.toDoList.length, todo.inputText, todo.inputCompleted)])});
+	}
+
+	handleCheckBox(i){
+		let todo = this.state.toDoList.map((elem, index) => {
+			if (elem.sequenceId === i) {
+				elem.isCompleted = !elem.isCompleted;
+			}
+			return elem;
+		});
+		this.setState(function(prev, props){
+				return {toDoList : todo}
+		});
+	}
+
+	handleDeleteClick(i){
+		let todo = this.state.toDoList.filter((elem, index) => {
+			return elem.sequenceId !== i;
+		});
+		this.setState({toDoList : todo});
 	}
 
 	render(){
+		const taskList = this.state.toDoList.map((elem, index) =>{
+			return <ToDoList taskDetail={elem} key={elem.sequenceId} index={elem.sequenceId}
+			onCheckBoxClick={this.handleCheckBox} onDeleteClick={this.handleDeleteClick}/>
+		});
+
 		return(
 		<div className="main">
 			<div className="header">todo</div>
-			<CreateToDoForm onButtonClick = {this.handleButtonClick}/>
-			<ToDoList toDoList = {this.state.toDoList}/>
+			<CreateToDoForm onButtonClick = {this.handleButtonClick} />
+			<ul>
+				{taskList}
+			</ul>
+
 		</div>
 	);
 	}
@@ -63,35 +93,21 @@ class CreateToDoForm extends React.Component{
 }
 
 class ToDoList extends React.Component{
-
-
-  render(){
-    const taskList = this.props.toDoList.map((elem, index) =>{
-      return <ToDoDetails key = {index} taskDetail = {elem}/>
-    });
-    
-    return(
-      <div>
-        <ul>
-          {taskList}
-        </ul>
-      </div>
-    );
-  }
-}
-
-class ToDoDetails extends React.Component{
 	constructor(props){
 		super(props);
 		this.handleCheckBox = this.handleCheckBox.bind(this);
+		this.handleDeleteClick = this.handleDeleteClick.bind(this);
 	}
 
 	handleCheckBox(event){
-		this.props.onCheck
+		this.props.onCheckBoxClick(this.props.index);
+	}
+
+	handleDeleteClick(event){
+		this.props.onDeleteClick(this.props.index);
 	}
 
 	render(){
-		console.log(this.props.taskDetail);
 		const task = this.props.taskDetail;
 		return(
 		<ul>
