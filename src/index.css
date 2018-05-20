@@ -59,3 +59,12 @@ ul li{
 	right: 1em;
 	cursor: pointer;
 }
+
+.sort-btn{
+	cursor: pointer;
+	display: inline-block;
+}
+
+.active-sort{
+	text-shadow: 0 0 2px #2d1db5, 0 0 4px #2d1db5;
+}

@@ -14,11 +14,14 @@ class ToDo extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
-			toDoList : []
+			toDoList : [],
+			toDoListSorted : [],
+			isSortedDisplay : false
 		}
 		this.handleButtonClick = this.handleButtonClick.bind(this);
 		this.handleCheckBox = this.handleCheckBox.bind(this);
 		this.handleDeleteClick = this.handleDeleteClick.bind(this);
+		this.handleSortClick = this.handleSortClick.bind(this);
 	}
 
 	handleButtonClick(todo){
@@ -38,14 +41,22 @@ class ToDo extends React.Component{
 	}
 
 	handleDeleteClick(i){
-		let todo = this.state.toDoList.filter((elem, index) => {
+		const todo = this.state.toDoList.filter((elem, index) => {
 			return elem.sequenceId !== i;
 		});
 		this.setState({toDoList : todo});
 	}
 
+	handleSortClick(todo){
+		this.setState((prev, props) => {
+			return {toDoListSorted : todo, isSortedDisplay: !prev.isSortedDisplay}
+		});
+	}
+
 	render(){
-		const taskList = this.state.toDoList.map((elem, index) =>{
+		const toDoList = this.state.toDoListSorted.length === 0 ? this.state.toDoList : this.state.toDoListSorted;
+
+		const taskList = toDoList.map((elem, index) =>{
 			return <ToDoList taskDetail={elem} key={elem.sequenceId} index={elem.sequenceId}
 			onCheckBoxClick={this.handleCheckBox} onDeleteClick={this.handleDeleteClick}/>
 		});
@@ -54,6 +65,7 @@ class ToDo extends React.Component{
 		<div className="main">
 			<div className="header">todo</div>
 			<CreateToDoForm onButtonClick = {this.handleButtonClick} />
+			<SortToDo shouldSort={!this.state.isSortedDisplay} toSort={this.state.toDoList} onSortClick={this.handleSortClick}/>
 			<ul>
 				{taskList}
 			</ul>
@@ -61,6 +73,19 @@ class ToDo extends React.Component{
 		</div>
 	);
 	}
+}
+
+//Sort by description
+const SortToDo = (props) => {
+	function handleSortClick(e){
+		if (props.shouldSort) {
+			return props.onSortClick(props.toSort.concat().sort((a,b) => a.description.localeCompare(b.description)));
+		} else {
+			return props.onSortClick([]);
+		}
+	}
+
+	return <p className={"sort-btn " + (!props.shouldSort ? "active-sort" : '')} onClick={handleSortClick}>sort</p>
 }
 
 class CreateToDoForm extends React.Component{
@@ -123,10 +148,7 @@ class ToDoList extends React.Component{
 	}
 }
 
-const TASKS = [
-    {task: 'wash clothes', completed: true},
-    {task: 'clean dirty dishes', completed: false},
-    {task: 'wipe the floor', completed: false}
+const TASKS = [new ToDoElement(0, 'wash clothes', true), new ToDoElement(1,'clean dirty dishes' , false)
   ];
 
 ReactDOM.render(
