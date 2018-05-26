@@ -16,12 +16,12 @@ class ToDo extends React.Component{
 		this.state = {
 			toDoList : []
 		}
-		this.handleButtonClick = this.handleButtonClick.bind(this);
+		this.handleNewTodo = this.handleNewTodo.bind(this);
 		this.handleCheckBox = this.handleCheckBox.bind(this);
 		this.handleDeleteClick = this.handleDeleteClick.bind(this);
 	}
 
-	handleButtonClick(todo){
+	handleNewTodo(todo){
 		this.setState({toDoList : this.state.toDoList.concat([new ToDoElement(this.state.toDoList.length, todo.inputText, todo.inputCompleted)])});
 	}
 
@@ -53,7 +53,7 @@ class ToDo extends React.Component{
 		return(
 		<div className="main">
 			<div className="header">todo</div>
-			<CreateToDoForm onButtonClick = {this.handleButtonClick} />
+			<CreateToDoForm onNewTodo = {this.handleNewTodo} />
 			<ul>
 				{taskList}
 			</ul>
@@ -72,6 +72,7 @@ class CreateToDoForm extends React.Component{
 		}
 		this.handleChange = this.handleChange.bind(this);
 		this.handleButtonClick = this.handleButtonClick.bind(this);
+		this.handlePressedEnter = this.handlePressedEnter.bind(this);
 	}
 
 	handleChange(event){
@@ -79,13 +80,20 @@ class CreateToDoForm extends React.Component{
 	}
 
 	handleButtonClick(e){
-		this.props.onButtonClick(this.state);
+		this.props.onNewTodo(this.state);
+	}
+
+	handlePressedEnter(e){
+		if (e.key === 'Enter'){
+			this.props.onNewTodo(this.state);
+		}
 	}
 
 	render(){
 		return(
   			<div className="searchForm">
-        		<input type='text' placeholder="what's need to be done?" onChange={this.handleChange} value={this.state.inputText}/>
+        		<input type='text' placeholder="what's need to be done?" onChange={this.handleChange} value={this.state.inputText}
+        		onKeyPress={this.handlePressedEnter}/>
         		<button onClick={this.handleButtonClick}>{">"}</button>
       		</div>
     	);
