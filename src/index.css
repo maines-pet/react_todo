@@ -59,3 +59,8 @@ ul li{
 	right: 1em;
 	cursor: pointer;
 }
+
+.completed{
+	text-decoration: line-through;
+	color: #bbb7b7;
+}

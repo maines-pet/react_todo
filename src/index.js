@@ -115,8 +115,9 @@ class ToDoList extends React.Component{
 				<i className={'checkbox-complete ' + (task.isCompleted ? 'far fa-check-square' : 'far fa-square')}
 					onClick={this.handleCheckBox}
 				/>
-				<span className='taks-detail'>{task.description}</span>
-				<span className='delete' onClick={this.handleDeleteClick}>x</span>
+				<span className={'task-detail ' + (task.isCompleted ? 'completed' : ' ')}>{task.description}</span>
+				<i className='fas fa-times delete' onClick={this.handleDeleteClick}/>
+
 			</li>
 		</ul>
 		);
