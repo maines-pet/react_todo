@@ -75,17 +75,27 @@ class CreateToDoForm extends React.Component{
 		this.handlePressedEnter = this.handlePressedEnter.bind(this);
 	}
 
+	clearInputText(){
+		if (!this.state.inputText) return;
+		this.setState({inputText : ''});
+		this.props.onNewTodo(this.state);
+	}
+
 	handleChange(event){
 		this.setState({inputText : event.target.value});
 	}
 
 	handleButtonClick(e){
-		this.props.onNewTodo(this.state);
+		this.clearInputText();
+		// this.setState({inputText : ''});
+		// this.props.onNewTodo(this.state);
 	}
 
 	handlePressedEnter(e){
 		if (e.key === 'Enter'){
-			this.props.onNewTodo(this.state);
+			this.clearInputText();
+			// this.setState({inputText : ''});
+			// this.props.onNewTodo(this.state);
 		}
 	}
 
@@ -131,12 +141,6 @@ class ToDoList extends React.Component{
 		);
 	}
 }
-
-const TASKS = [
-    {task: 'wash clothes', completed: true},
-    {task: 'clean dirty dishes', completed: false},
-    {task: 'wipe the floor', completed: false}
-  ];
 
 ReactDOM.render(
   <ToDo/>,
